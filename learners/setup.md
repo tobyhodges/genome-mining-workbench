@@ -16,7 +16,7 @@ Description
 
 > ## MacOS X
 
-:::::::::::::::  solution
+:::::::::::::::  spoiler
 
 ## Linux
 
