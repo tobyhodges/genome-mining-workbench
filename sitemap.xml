@@ -43,10 +43,16 @@
     <loc>https://carpentries-incubator.github.io/genome-mining/ReadmeGM.html</loc>
   </url>
   <url>
+    <loc>https://carpentries-incubator.github.io/genome-mining/aio.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries-incubator.github.io/genome-mining/data.html</loc>
   </url>
   <url>
     <loc>https://carpentries-incubator.github.io/genome-mining/discuss.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries-incubator.github.io/genome-mining/images.html</loc>
   </url>
   <url>
     <loc>https://carpentries-incubator.github.io/genome-mining/index.html</loc>
@@ -94,19 +100,37 @@
     <loc>https://carpentries-incubator.github.io/genome-mining/instructor/ReadmeGM.html</loc>
   </url>
   <url>
+    <loc>https://carpentries-incubator.github.io/genome-mining/instructor/aio.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries-incubator.github.io/genome-mining/instructor/data.html</loc>
   </url>
   <url>
     <loc>https://carpentries-incubator.github.io/genome-mining/instructor/discuss.html</loc>
   </url>
   <url>
+    <loc>https://carpentries-incubator.github.io/genome-mining/instructor/images.html</loc>
+  </url>
+  <url>
     <loc>https://carpentries-incubator.github.io/genome-mining/instructor/index.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries-incubator.github.io/genome-mining/instructor/instructor-notes.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries-incubator.github.io/genome-mining/instructor/key-points.html</loc>
   </url>
   <url>
     <loc>https://carpentries-incubator.github.io/genome-mining/instructor/profiles.html</loc>
   </url>
   <url>
     <loc>https://carpentries-incubator.github.io/genome-mining/instructor/reference.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries-incubator.github.io/genome-mining/instructor-notes.html</loc>
+  </url>
+  <url>
+    <loc>https://carpentries-incubator.github.io/genome-mining/key-points.html</loc>
   </url>
   <url>
     <loc>https://carpentries-incubator.github.io/genome-mining/profiles.html</loc>
