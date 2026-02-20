@@ -1,9 +1,11 @@
 ---
-layout: reference
+title: 'Glossary'
 ---
 
 ## Glossary
 
 : cd
 command to change directory
-{% include links.md %}
+
+
+

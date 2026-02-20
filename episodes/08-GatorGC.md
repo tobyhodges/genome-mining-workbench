@@ -1,34 +1,35 @@
 ---
-title: "GATOR-GC: Genomic Assessment Tool for Orthologous Regions and Gene Clusters"
+title: 'GATOR-GC: Genomic Assessment Tool for Orthologous Regions and Gene Clusters'
 teaching: 30
 exercises: 30
-questions:
-- "What is GATOR-GC, and how does it differ from other BGC exploration tools?"
-- "How does GATOR-GC establish BGC boundaries using evolutionary principles?"
-- "What types of biosynthetic diversity can GATOR-GC identify?"
-- "What do I need to perform a targeted exploration using GATOR-GC?"
-objectives:
-- "Understand the GATOR-GC algorithm and its evolutionary approach to BGC boundary definition."
-- "Learn how to conduct a targeted search for key enzymes within BGCs and genomic islands using GATOR-GC."
-- "Execute an example analysis using customizable parameters for precision in identifying GATOR windows."
-- "Visualize and interpret the output of GATOR-GC, including gene cluster diagrams and genomic neighborhoods."
-keypoints:
-- "GATOR-GC is an innovative tool that uses an enzyme-aware scoring system and evolutionary principles to explore BGC diversity."
-- "Unlike traditional methods, GATOR-GC offers flexibility in defining the taxonomic scope and prioritizes the identification of novel biosynthetic pathways."
-- "GATOR-GC can be customized to search for essential and optional enzymes, making it a powerful tool for targeted exploration."
-- "Dynamic gene cluster diagrams and GATOR neighborhood visualizations provide clear insights into gene conservation and genomic relationships."
 ---
-{% include links.md %}
 
-<a href="../fig/gator_gc_logo.jpg">
-<img src="../fig/gator_gc_logo.jpg" alt="GATOR methods" style="width: 60%; height: auto;" />
+::::::::::::::::::::::::::::::::::::::: objectives
+
+- Understand the GATOR-GC algorithm and its evolutionary approach to BGC boundary definition.
+- Learn how to conduct a targeted search for key enzymes within BGCs and genomic islands using GATOR-GC.
+- Execute an example analysis using customizable parameters for precision in identifying GATOR windows.
+- Visualize and interpret the output of GATOR-GC, including gene cluster diagrams and genomic neighborhoods.
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::::::: questions
+
+- What is GATOR-GC, and how does it differ from other BGC exploration tools?
+- How does GATOR-GC establish BGC boundaries using evolutionary principles?
+- What types of biosynthetic diversity can GATOR-GC identify?
+- What do I need to perform a targeted exploration using GATOR-GC?
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
+
+<a href="fig/gator_gc_logo.jpg">
+<img src="fig/gator_gc_logo.jpg" alt="GATOR methods" style="width: 60%; height: auto;" />
 </a>
 
+GATOR-GC is a user-friendly algorithm designed for targeted exploration of BGC and genomic islands diversity. It focuses on key biosynthetic enzymes and offers flexibility in defining the taxonomic scope of the analysis. Unlike methods relying on arbitrary cutoffs, GATOR-GC establishes BGC boundaries based on evolutionary principles and implements an enzyme-aware scoring system for assessing BGC-BGC distances, moving beyond a binary presence-absence framework. This approach enhances the tool's capability to identify and prioritize novelty, effectively mapping biosynthetic diversity into distinct groups.
 
-GATOR-GC is a user-friendly algorithm designed for targeted exploration of BGC and genomic islands diversity. It focuses on key biosynthetic enzymes and offers flexibility in defining the taxonomic scope of the analysis. Unlike methods relying on arbitrary cutoffs, GATOR-GC establishes BGC boundaries based on evolutionary principles and implements an enzyme-aware scoring system for assessing BGC-BGC distances, moving beyond a binary presence-absence framework. This approach enhances the tool's capability to identify and prioritize novelty, effectively mapping biosynthetic diversity into distinct groups. 
- 
- To know more about GATOR GC you can go to the [Github repository](https://github.com/chevrettelab/gator-gc/).   
- 
+To know more about GATOR GC you can go to the [Github repository](https://github.com/chevrettelab/gator-gc/).
+
 ## Most relevant features
 
 - **Targeted Search**: Conduct targeted searches for essential key enzymes and optional tailor enzymes within Biosynthetic Gene Clusters (BGCs) and genomic islands, streamlining the discovery process.
@@ -39,65 +40,69 @@ GATOR-GC is a user-friendly algorithm designed for targeted exploration of BGC a
 - **GATOR Conservation**: Generate dynamic gene cluster diagrams that visually differentiate between required and optional proteins using color coding. Transparency levels indicate the gene's presence within GATOR windows, providing a clear visual representation of gene conservation
 - **GATOR Neighborhoods**: Visualize each GATOR window's genomic neighborhood with organized tracks based on GATOR focal scores. Homology between genes is intuitively illustrated with gray bars, facilitating easy understanding of genetic relationships and conservation
 
-<a href="../fig/gator_gc_alogorithm.png">
-  <img src="../fig/gator_gc_alogorithm.png" alt="GATOR methods" />
+<a href="fig/gator_gc_alogorithm.png">
+  <img src="fig/gator_gc_alogorithm.png" alt="GATOR methods" />
 </a>
 
 ## GATOR GC
 
 Before starting, make sure to activate the `gator-gc` environment.
 
-~~~
+```bash
 $ conda activate /miniconda3/envs/gator-gc/
-~~~
-{: .language-bash}
+```
 
 The first part of running GatorGC has to do with creating a database. To facilitate the process first we need to create a directory where we can find all Gator-GC results:
 
-~~~
+```bash
 $ cd   ~/pan_workshop/results/
 $ mkdir gator_gc_res/
-~~~
-{: .language-bash}
+```
 
 After creating this, we will move to this folder
-~~~
+
+```bash
 $ cd   ~/pan_workshop/results/gator_gc_res
-~~~
-{: .language-bash} 
+```
 
-To create the database, we need all the annotated genomes that we have previously processed. For the database, we only require the genbank files, which end with gbk. We can use the `cp` command to copy all the genbank files of our annotated genomes to a folder in this directory. First, we will create the directory where we will copy the files. 
-~~~
+To create the database, we need all the annotated genomes that we have previously processed. For the database, we only require the genbank files, which end with gbk. We can use the `cp` command to copy all the genbank files of our annotated genomes to a folder in this directory. First, we will create the directory where we will copy the files.
+
+```bash
 $ mkdir   gbks/
-~~~
-{: .language-bash} 
+```
 
-> ## Exercise 1. Copy all the gbk files to the new directory 
-> We know that all the genbank files are in the following path `~/pan_workshop/results/annotated/` and inside the annotated folder, there is a folder for each genome and each folder contains the output files from prokka. You can use `tree ~/pan_workshop/results/annotated/`to confirm this. 
->   Using `cp`, try to complete the gaps in the following command to copy all the genbank files from the previously processed genomes to the new directory you created `gbks`. Remember you can use `*` to match any symbol(s). 
-> ~~~
-> $ cp  ~/pan_workshop/results/annotated/_________prokka/_________  gbks/. 
-> ~~~
-> >{: .language-bash}
-> > ## Solution
-> >
-> > ~~~
-> > cp ~/pan_workshop/results/annotated/*prokka/*gbk gbks/.
-> > ~~~
-> >
-> > {: .laguage-bash}
-> {: .solution}
-{: .challenge} 
+:::::::::::::::::::::::::::::::::::::::  challenge
 
+## Exercise 1. Copy all the gbk files to the new directory
+
+We know that all the genbank files are in the following path `~/pan_workshop/results/annotated/` and inside the annotated folder, there is a folder for each genome and each folder contains the output files from prokka. You can use `tree ~/pan_workshop/results/annotated/`to confirm this.
+Using `cp`, try to complete the gaps in the following command to copy all the genbank files from the previously processed genomes to the new directory you created `gbks`. Remember you can use `*` to match any symbol(s).
+
+```bash
+$ cp  ~/pan_workshop/results/annotated/_________prokka/_________  gbks/. 
+```
+
+:::::::::::::::  solution
+
+## Solution
+
+```bash
+cp ~/pan_workshop/results/annotated/*prokka/*gbk gbks/.
+```
+
+:::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ## Set GATOR-GC database
+
 Now that we have the genbank files in a folder we can create the necessary database for gator-gc. The command to create the database is `pre-gator-gc`. You can use the `-h` flag to explore the options of this command.
 
-~~~
+```bash
 $ pre-gator-gc -h
-~~~
-{: .language-bash}   
-~~~
+```
+
+```output
 usage: pre-gator-gc [-h] -g  [...] [-e] [-t] -o  [-v]
 
                                                                                                                                                                      
@@ -131,15 +136,15 @@ HMMER Options:
 
 Output Options:
   -o          Directory where the gator databases (protein,  DIAMOND, and modular domtblout databases) will be saved.
-~~~
-{: .output}
+```
 
-As we can see in the help output, we have to feed the command with -g which is the path to the folder containing the genbank files and -o which is the directory where we want gator to save the database to be processed (output folder). To create the database we will use the following line of code: 
-~~~
+As we can see in the help output, we have to feed the command with -g which is the path to the folder containing the genbank files and -o which is the directory where we want gator to save the database to be processed (output folder). To create the database we will use the following line of code:
+
+```bash
 $ pre-gator-gc -g gbks/ -o gator_databases -v
-~~~
-{: .language-bash} 
-~~~
+```
+
+```output
 
                                                                                                                                                                      
      -\ ---\--\ -------\ ----\ ---\--\ ---\ --\ ----\ ----\--------\ /---                         
@@ -164,19 +169,19 @@ Version: v0.9.0
 [4] - 2024-08-20 14:06:34,295 - INFO - Successfully created the gator DIAMOND database to gator_databases/gator_databases.dmnd
 [5] - 2024-08-20 14:06:34,946 - INFO - Successfully created the gator domtblout database to gator_databases/gator_databases.domtblout
 [6] - 2024-08-20 14:06:34,946 - INFO - Execution time: 2.15 seconds
-~~~
-{: .output}
+```
 
 **QUESTION**: You already read the help page of `pre-gator-gc`. Why we added the flag `-v`?
 
 ## GATOR-GC
-Now that we have the database ready, let's review what we need to run `gator-gc`. To find out, we can type the command with the `-h` help flag. 
 
-~~~
+Now that we have the database ready, let's review what we need to run `gator-gc`. To find out, we can type the command with the `-h` help flag.
+
+```bash
 $  gator-gc -h
-~~~
-{: .language-bash} 
-~~~
+```
+
+```output
 usage: gator-gc [-h] -rq  [-op] -g  [...] -d  [-t] [-qc] [-idt] [-e] [-rd] [-we] -o  [-nc] [-nn] [-v]
 
      -\ ---\--\ -------\ ----\ ---\--\ ---\ --\ ----\ ----\--------\ /--- 
@@ -222,31 +227,28 @@ Output Options:
   -o          Directory to save GATOR-GC results.
   -nc         Disable creation of GATOR conservation figures.
   -nn         Disable creation of GATOR neighborhoods figures.
-~~~
-{: .output}
+```
 
+From this output, we can see the Gator-GC options. The minimum requirements to run gator-gc are:
 
-From this output, we can see the Gator-GC options. The minimum requirements to run gator-gc are: 
 - `-rq` Path to the query protein FASTA file containing required proteins.
 - `-g` Directory containing the Genbank files.
 - `-d` Directory containing the PRE-GATOR-GC databases.
 - `-o` Output directory
 
-To compare the results obtained by the different tools we have used, we will use the reference protein cpsG, whose encoding gene is part of the polysaccharide BGC produced by some *S. agalactiae*. The aminoacid fasta is already in the server in `~/pan_workshop/results/genome-mining/corason-conda/EXAMPLE2/cpsg.query`. So the command to run gator-gc is the following: 
+To compare the results obtained by the different tools we have used, we will use the reference protein cpsG, whose encoding gene is part of the polysaccharide BGC produced by some *S. agalactiae*. The aminoacid fasta is already in the server in `~/pan_workshop/results/genome-mining/corason-conda/EXAMPLE2/cpsg.query`. So the command to run gator-gc is the following:
 
-~~~
+```bash
 $  gator-gc -rq ~/pan_workshop/results/genome-mining/corason-conda/EXAMPLE2/cpsg.query -g gbks/ -d gator_databases/ -o cpsg_gator
-~~~
-{: .language-bash} 
+```
 
 Once Gator-GC finishes, we can observe the structure of the files created by the program using `tree`.
 
-~~~
+```bash
 $  tree cpsg_gator/
-~~~
-{: .language-bash} 
+```
 
-~~~
+```output
 cpsg_gator/
 ├── all_merged_queries_38nh2fip.faa
 ├── all_merged_queries_unvwb3pq.domtbl
@@ -304,31 +306,44 @@ cpsg_gator/
     └── window_9--Streptococcus_agalactiae_18RS21_prokka.gbk
 
 7 directories, 47 files
-~~~
-{: .output}
+```
 
 The output folder `cpsg_gator/` for gator-gc includes the following subfolders:
-- **windows_genbanks**: This folder contains GenBank files, each generated for a specific window.
-- **presence_absence**: Within this folder, you can find gene-level presence-absence tables for each gator window in CSV format. The tables are named based on the window number and the corresponding GenBank filename. 
-- **gator_scores**: This folder houses tables with a structure similar to the presence-absence tables. However, instead of binary numbers, normal distributions were applied to each protein. The highest distribution value is set to 1, and these values were multiplied by the presence-absence values. 
-- **concatenated_scores**: This folder contains a CSV file, which consolidates all the gator focal scores. Additionally, a "clustermap_GFSs" file displays the distribution of gator windows based on the gator focal scores using a heatmap and a dendrogram. 
 
-Here is the resulting heatmap and dendrogram. You can view the images in the file explorer on the left side of the server screen. Remember to go to the specific folder to open the file. 
+- **windows\_genbanks**: This folder contains GenBank files, each generated for a specific window.
+- **presence\_absence**: Within this folder, you can find gene-level presence-absence tables for each gator window in CSV format. The tables are named based on the window number and the corresponding GenBank filename.
+- **gator\_scores**: This folder houses tables with a structure similar to the presence-absence tables. However, instead of binary numbers, normal distributions were applied to each protein. The highest distribution value is set to 1, and these values were multiplied by the presence-absence values.
+- **concatenated\_scores**: This folder contains a CSV file, which consolidates all the gator focal scores. Additionally, a "clustermap\_GFSs" file displays the distribution of gator windows based on the gator focal scores using a heatmap and a dendrogram.
 
-<a href="../fig/heatmap.svg">
-  <img src="../fig/heatmap.svg" alt="Heatmap resulting from cpsg gator-gc analysis" />
+Here is the resulting heatmap and dendrogram. You can view the images in the file explorer on the left side of the server screen. Remember to go to the specific folder to open the file.
+
+<a href="fig/heatmap.svg">
+  <img src="fig/heatmap.svg" alt="Heatmap resulting from cpsg gator-gc analysis" />
 </a>
 
-- **gator_conservation_plots**: This folder includes high-quality vectorized figures, each corresponding to a gator focal window. These figures display the gene organization and cluster size. The figure corresponding to the first window is shown below:
+- **gator\_conservation\_plots**: This folder includes high-quality vectorized figures, each corresponding to a gator focal window. These figures display the gene organization and cluster size. The figure corresponding to the first window is shown below:
 
-<a href="../fig/coservation_window_1.svg    ">
-  <img src="../fig/coservation_window_1.svg" alt="Conservation plot for the first window" />
+<a href="fig/coservation_window_1.svg    ">
+  <img src="fig/coservation_window_1.svg" alt="Conservation plot for the first window" />
 </a>
 
 In these figures required genes are represented in purple, optional genes in orange, and genes not present in the protein queries files in green. The transparency of each gene's color is determined by the conservation of homologous genes found in the gator windows.
 
-- **gator_neighborhoods_plots**: Here you can find high-quality vectorized figures showcasing genome neighborhoods. Each file corresponds to a gator focal window (top track), with the remaining gator windows sorted based on the gator focal scores. This arrangement positions the second top track as the most similar gator window, and the last track at the bottom represents the most dissimilar gator window. The genomic organization of the gator windows is flipped based on the first required gene in the gator focal window, ensuring that the genomic organization aligns with that of the gator focal window. Homology rails are displayed, depicting the diamond protein alignment position hits in the genes. The first one shoul look like this:
+- **gator\_neighborhoods\_plots**: Here you can find high-quality vectorized figures showcasing genome neighborhoods. Each file corresponds to a gator focal window (top track), with the remaining gator windows sorted based on the gator focal scores. This arrangement positions the second top track as the most similar gator window, and the last track at the bottom represents the most dissimilar gator window. The genomic organization of the gator windows is flipped based on the first required gene in the gator focal window, ensuring that the genomic organization aligns with that of the gator focal window. Homology rails are displayed, depicting the diamond protein alignment position hits in the genes. The first one shoul look like this:
 
-<a href="../fig/window_1_neighborhood.svg">
-  <img src="../fig/window_1_neighborhood.svg" alt="Fisrt window_1_neighborhood plot for the first window" />
+<a href="fig/window_1_neighborhood.svg">
+  <img src="fig/window_1_neighborhood.svg" alt="Fisrt window_1_neighborhood plot for the first window" />
 </a>
+
+
+
+:::::::::::::::::::::::::::::::::::::::: keypoints
+
+- GATOR-GC is an innovative tool that uses an enzyme-aware scoring system and evolutionary principles to explore BGC diversity.
+- Unlike traditional methods, GATOR-GC offers flexibility in defining the taxonomic scope and prioritizes the identification of novel biosynthetic pathways.
+- GATOR-GC can be customized to search for essential and optional enzymes, making it a powerful tool for targeted exploration.
+- Dynamic gene cluster diagrams and GATOR neighborhood visualizations provide clear insights into gene conservation and genomic relationships.
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
+
+

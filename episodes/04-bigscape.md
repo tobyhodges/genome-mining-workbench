@@ -1,18 +1,22 @@
 ---
-title: "BGC Similarity Networks"
+title: BGC Similarity Networks
 teaching: 30
 exercises: 15
-questions:
-- "How can I measure similarity between BGCs?"
-objectives:
-- "Understand how BiG-SCAPE measures similarity between BGCs."
-- "Take an antiSMASH output to perform a BiG-SCAPE analysis."
-- "Interpret BiG-SCAPE similarity networks and GCF phylogenies."
-keypoints:
-- "BGC similarity is measured by BiG-SCAPE according to protein domain content, adjacency and sequence identity."
-- "The `gbks` of the regions identified by antiSMASH are the input for BiG-SCAPE."
-- "BiG-SCAPE delivers BGCs similarity networks with which it delimits Gene Cluster Families and creates a phylogeny of the BGCs in each GCF."
 ---
+
+::::::::::::::::::::::::::::::::::::::: objectives
+
+- Understand how BiG-SCAPE measures similarity between BGCs.
+- Take an antiSMASH output to perform a BiG-SCAPE analysis.
+- Interpret BiG-SCAPE similarity networks and GCF phylogenies.
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::::::: questions
+
+- How can I measure similarity between BGCs?
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ## Introduction
 
@@ -38,36 +42,36 @@ cutoffs would create families of more loosely related compounds.
 ## Preparing the input
 
 In each of the antiSMASH output directories, we will find a single `.gbk`
- file for each BGC, which includes "region" within its filename. Thus,
- we will copy all these files to the new directory.
+file for each BGC, which includes "region" within its filename. Thus,
+we will copy all these files to the new directory.
 
 Move into the directory that has the antiSMASH results of each genome:
-~~~
+
+```bash
 $ conda deactivate  
 $ conda activate /miniconda3/envs/bigscape/  
 $ cd ~/pan_workshop/results/antismash/
 $ ls
-~~~
-{: .language-bash}
+```
 
 Since we will put together in the same directory many files with similar names, we want to
 make sure that nothing is left behind or overwritten. For this, we
- will count all the `gbk` files of all the genomes.
-~~~
-$ ls Streptococcus_agalactiae_*/*region*gbk | wc -l
-~~~
-{: .language-bash}
+will count all the `gbk` files of all the genomes.
 
-~~~
+```bash
+$ ls Streptococcus_agalactiae_*/*region*gbk | wc -l
+```
+
+```output
 16
-~~~
-{: .output}
+```
 
 Since the names are somewhat cryptic, they could be repeated,
- so we will rename the `gbks` in such a way that they include the genome name.
+so we will rename the `gbks` in such a way that they include the genome name.
 
 Copy the following script to a file named `change-names.sh` using `nano`:
-~~~
+
+```bash
 # This script is to rename the antiSMASH gbks for them to include the species and strain names, taken from the directory name.
 # The argument it requires is the name of the directory with the AntiSMASH output, which must NOT contain a slash at the end.
 
@@ -95,35 +99,34 @@ ls -1 "$1"/*region*gbk | while read line # enlist the gbks of all regions in the
 			 	cd .. # return to main directory before it begins again
 		 done
  done
-~~~
-{: .language-bash}
+```
 
 Run the script for all the directory:
-~~~
+
+```bash
 $ for species in Streptococcus_agalactiae_*
 > do
 >   	 sh change-names.sh $species
 >    done
 
-~~~
-{: .language-bash}
+```
 
 Now make a directory for all your BiG-SCAPE analyses and inside it
 make a directory that contains all of the `gbks` of all of your genomes.
 This one will be the input for BiG-SCAPE. (For convenience `bigscape/` will be inside `antismash/` while we run BiG-SCAPE).
-~~~
+
+```bash
 $ mkdir -p bigscape/bgcs_gbks/
-~~~
-{: .language-bash}
+```
 
 Now copy all the region `gbks`to this new directory, and look at its content:
-~~~
+
+```bash
 $ cp Streptococcus_agalactiae_*/*region*gbk bigscape/bgcs_gbks/
 $ ls bigscape/bgcs_gbks/
-~~~
-{: .language-bash}
+```
 
-~~~
+```output
 Streptococcus_agalactiae_18RS21_prokka-AAJO01000016.1.region001.gbk
 Streptococcus_agalactiae_18RS21_prokka-AAJO01000043.1.region001.gbk
 Streptococcus_agalactiae_2603V_prokka-NC_004116.1.region001.gbk
@@ -140,18 +143,17 @@ Streptococcus_agalactiae_H36B_prokka-AAJS01000020.1.region001.gbk
 Streptococcus_agalactiae_H36B_prokka-AAJS01000117.1.region001.gbk
 Streptococcus_agalactiae_NEM316_prokka-NC_004368.1.region001.gbk
 Streptococcus_agalactiae_NEM316_prokka-NC_004368.1.region002.gbk
-~~~
-{: .output}
+```
 
 ## Running BiG-SCAPE
 
 BiG-SCAPE can be executed in different ways, depending on the installation mode that you applied.
 You could call the program through `bigscape`, `run_bigscape`or `run_bigscape.py`. Here, based on our
-installation (see [Setup](setup.html)), we will use `bigscape`.
+installation (see [Setup](../learners/setup.md)), we will use `bigscape`.
 
 The options that we will use are described in the help page:
 
-~~~
+```bash
 -i INPUTDIR, --inputdir INPUTDIR
                     	Input directory of gbk files, if left empty, all gbk
                     	files in current and lower directories will be used.
@@ -182,8 +184,7 @@ The options that we will use are described in the help page:
                     	from antiSMASH v4+, otherwise use global mode on that
                     	pair
 
-~~~
-{: .language-bash}
+```
 
 We will use the option `--mix` to have an analysis of all of the BGCs together besides
 the analyses of the BGCs separated by class. The `--hybrids-off` option will prevent
@@ -196,20 +197,22 @@ for which the glocal mode is automatically selected. For this run we will use on
 cutoff value (0.3).
 
 Now we are ready to run BiG-SCAPE:
-~~~
-$ bigscape -i bigscape/bgcs_gbks/ -o bigscape/output_220124 --mix --hybrids-off --mode auto --pfam_dir /miniconda3/envs/bigscape/BiG-SCAPE-1.1.5/
-~~~
-{: .language-bash}
 
-> ## Output names
->
-> Most of the times you will need to re-run a software once you have explored the results;
-> maybe you want to change parameters or add more samples. For this reason, you will need
-> a flexible way to organize your project, including the names of the outputs.
-> Usually, a good idea is to put the date in the name of the folder
-> and keep track of the analyses you are running in your research notes.
->
-{: .callout}
+```bash
+$ bigscape -i bigscape/bgcs_gbks/ -o bigscape/output_220124 --mix --hybrids-off --mode auto --pfam_dir /miniconda3/envs/bigscape/BiG-SCAPE-1.1.5/
+```
+
+:::::::::::::::::::::::::::::::::::::::::  callout
+
+## Output names
+
+Most of the times you will need to re-run a software once you have explored the results;
+maybe you want to change parameters or add more samples. For this reason, you will need
+a flexible way to organize your project, including the names of the outputs.
+Usually, a good idea is to put the date in the name of the folder
+and keep track of the analyses you are running in your research notes.
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
 
 Once the process is finished, you will find in your terminal screen some basic results,
 such as the number of BGCs included in each type of network. In the output folder
@@ -218,33 +221,31 @@ Since BiG-SCAPE does not produce a file with the run information, it is useful
 to copy the text printed on the screen to a file. Use `nano` to paste all the text
 that BiG-SCAPE generated in a file named `bigscape.log` inside the folder `output_100722/logs/`.
 
-~~~
+```bash
 $ nano bigscape/output_220124/logs/bigscape.log
-~~~
-{: .language-bash}
+```
 
 Take a look at the BiG-SCAPE outputs:
 
-~~~
+```bash
 $ ls -F bigscape/output_220124/
-~~~
-{: .language-bash}
-~~~
+```
+
+```output
 cache/  html_content/  index.html*  logs/  network_files/  SVG/
-~~~
-{: .output}
+```
 
 To keep ordered your directories, move your `bigscape/` directory to `results/`:
-~~~
+
+```bash
 $ mv bigscape/ ../
-~~~
-{: .language-bash}
+```
 
 And move the file `change-names` to folder `scripts/` in the `pan_workshop/`directory to save our little script:
-~~~
+
+```bash
 $ mv change-names.sh ~/pan_workshop/scripts/
-~~~
-{: .language-bash}
+```
 
 ## Viewing the results
 
@@ -253,22 +254,19 @@ An easy way to prospect your results is by opening the `index.html` file with a 
 and locate in the folder where you want to store your BiG-SCAPE results. Now we compress the folder `output_100622/`
 and download it to your local machine.
 
-~~~
+```bash
 $ cd ~/pan_workshop/results/bigscape/
 $ zip -r output_220124.zip output_220124
 $ ls
-~~~
-{: .language-bash}
+```
 
 In the JupyterHub we navigate to the folders and go to `/pan_workshop/results/bigscape` and select the one we just created `output_220124.zip` and download it.
 
 On your local computer we unzip the files and open `output_220124/index.html` with a browser:
 
-
-~~~
+```bash
 $ firefox output_100622/index.html # If you have Firefox available, otherwise open it using the GUI.
-~~~
-{: .language-bash}
+```
 
 There are diverse sections in the visualization. The following image shows the overview page.
 At the left there is the run information and there are pie chart representations of the number of BGCs
@@ -277,8 +275,8 @@ the mix category. They show the Number of Families,
 Average number of BGCs per family, Max number of BGCs in a family and the Families with MIBiG Reference
 BGCs. You can click on the name of the class to see its Network Overview.
 
-<a href="../fig/02_05_01.png">
-  <img src="../fig/02_05_01.png" alt="BIG-SCAPE output as visualized in the web page.
+<a href="fig/02_05_01.png">
+  <img src="fig/02_05_01.png" alt="BIG-SCAPE output as visualized in the web page.
                                   	The overview page is displayed. At the left is the Run Information,
                                   	indicating the date and time at which the analysis was started and completed, as well as the parameters of the run.
                                   	Next is displayed the Input Data, specifying the total number of genomes and the total BGCs,
@@ -293,8 +291,8 @@ Below, there is a clustered heatmap of the presence/absence of the
 GCFs in each genome for each class. You can customize this heatmap and select the clustering methods,
 or the number of GCFs represented.
 
-<a href="../fig/02_05_02.png">
-  <img src="../fig/02_05_02.png" alt="BIG-SCAPE output as visualized in the web page.
+<a href="fig/02_05_02.png">
+  <img src="fig/02_05_02.png" alt="BIG-SCAPE output as visualized in the web page.
                                   	The overview page displaying the clustered heatmap of the presence/absence of the GCFs,
                                   	each class organized as a column at the base of the table, in each genome,
                                   	which are organized as rows at the right side of the table. Presence is depicted in red with 1 and absence in beige with 0." />
@@ -307,8 +305,8 @@ may comprise several GCFs. Each dot represents a BGC. These dots with bold circl
 described BGCs that have been recruited from the MiBIG database (Kautsar et al., 2020) because
 of its similarity with some BGC of the analysis.
 
-<a href="../fig/02_05_03.png">
-  <img src="../fig/02_05_03.png" alt="BIG-SCAPE similarity network of the complete mix of BGCs
+<a href="fig/02_05_03.png">
+  <img src="fig/02_05_03.png" alt="BIG-SCAPE similarity network of the complete mix of BGCs
                                   	obtained from the run. A network is represented for each GCF, each dot represents a BGC.
                                   	In this example there are a total of 23 BGCs, of which 6 are singletons, there are 28 links and 11 families.
                                   	Clicking over any of the dots shows the GCF at the right side and allows you to explore it further." />
@@ -320,100 +318,116 @@ arrow diagram of the genes in the BGCs and the protein domains in the genes.
 These trees are useful to prioritize the search of secondary metabolites, for example, by focusing on
 the most divergent BGC clade or those that are distant to already described BGCs.
 
-<a href="../fig/02_05_04.png">
-  <img src="../fig/02_05_04.png" alt="BIG-SCAPE output displaying a tree of phylogenetic distances
+<a href="fig/02_05_04.png">
+  <img src="fig/02_05_04.png" alt="BIG-SCAPE output displaying a tree of phylogenetic distances
                                   	among the BGCs comprised in a GCF. The example shows the GCF 10, comprised by six members.
                                   	Each BGC is represented in the tree by an arrow diagram of the genes and the protein domains in the genes
                                   	corresponding to that cluster." />
 </a>
 
+:::::::::::::::::::::::::::::::::::::::  challenge
 
-> ## Discussion 1: Reading the GCF networks
->
-> What can you conclude about the diversity of BGCs between _S. agalactiae_ and _S. thermophilus_?
-> Are they equally diverse? Do they share GCFs?
->
-> Digging deeper: Why do you think the strain _S. agalactiae_ H36B has a BGC that is not part of the other GCF in the same class?
-> > ## Solution
-> > _S. agalactiae_ and _S. thermophilus_ seem to have no diversity in common because there is no
-> > GCF with members from both species.
-> > All strains of _S.agalactiae_ seem to have a very similar set of BGCs. While _S. thermophilus_
-> > has several BGCs that are not related to any other BGC.
-> >
-> > Digging deeper: The BGC of the class PKSother in _S. agalactiae_ H3B6 has only 3 genes, which are also present in
-> > the BGCs of the other GCF in this class. It is possible that these genes are in a fragmented part of the assembled genome,
-> > but are actually part of a BGC that is similar to the other ones. And it is also possible that these 3 genes are present in
-> > the genome without being part of a bigger BGC.
-> {: .solution}
-{: .challenge}
+## Discussion 1: Reading the GCF networks
+
+What can you conclude about the diversity of BGCs between *S. agalactiae* and *S. thermophilus*?
+Are they equally diverse? Do they share GCFs?
+
+Digging deeper: Why do you think the strain *S. agalactiae* H36B has a BGC that is not part of the other GCF in the same class?
+
+:::::::::::::::  solution
+
+## Solution
+
+*S. agalactiae* and *S. thermophilus* seem to have no diversity in common because there is no
+GCF with members from both species.
+All strains of *S.agalactiae* seem to have a very similar set of BGCs. While *S. thermophilus*
+has several BGCs that are not related to any other BGC.
+
+Digging deeper: The BGC of the class PKSother in *S. agalactiae* H3B6 has only 3 genes, which are also present in
+the BGCs of the other GCF in this class. It is possible that these genes are in a fragmented part of the assembled genome,
+but are actually part of a BGC that is similar to the other ones. And it is also possible that these 3 genes are present in
+the genome without being part of a bigger BGC.
 
 
-> ## Exercise 1: Using the text output
->
-> Use one of the commands from the following list to make a reduced version of the `Network_Annotations_full.tsv`,
-> it should only contain the information of the type of product, the BGC class of each BGC, and its name. And save it in a file.
->
-> `grep` `cut` `ls` `cat` `mv`
->
-> **Tip**: The file is inside `network_files/`.
->
-> > ## Solution
-> >
-> > Take a look at the content of the file:
-> >
-> > ~~~
-> > $ head -n 3 network_files/2022-06-10_21-27-26_auto/Network_Annotations_Full.tsv
-> > ~~~
-> > {: .language-bash}
-> >
-> > ~~~
-> > BGC    Accession ID    Description    Product Prediction    BiG-SCAPE class    Organism    Taxonomy
-> > Streptococcus_agalactiae_18RS21-AAJO01000016.1.region001    AAJO01000016.1    Streptococcus agalactiae
-> > 18RS21    arylpolyene    Others    Streptococcus agalactiae 18RS21    Bacteria,Terrabacteria
-> > group,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Streptococcus,Streptococcus agalactiae
-> > Streptococcus_agalactiae_18RS21-AAJO01000043.1.region001    AAJO01000043.1    Streptococcus agalactiae
-> > 18RS21    T3PKS    PKSother    Streptococcus agalactiae 18RS21    Bacteria,Terrabacteria
-> > group,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Streptococcus,Streptococcus agalactiae
-> > ~~~
-> > {: .output}
-> >
-> > This table is difficult to read because of the amount of information it has. The first line has the names of the
-> > columns; `BGC`, `Product Prediction` and `BiG-SCAPE class` are the ones we are interested in. So we will extract those.
-> >
-> > ~~~
-> > cut -f 1,4,5 network_files/2022-06-10_21-27-26_auto/Network_Annotations_Full.tsv > type_of_BGC.tsv
-> > cat type_of_BGCs.tsv
-> > ~~~
-> > {: .language-bash}
-> >
-> > ~~~
-> > BGC    Product Prediction    BiG-SCAPE class
-> > Streptococcus_agalactiae_18RS21-AAJO01000016.1.region001    arylpolyene    Others
-> > Streptococcus_agalactiae_18RS21-AAJO01000043.1.region001    T3PKS    PKSother
-> > Streptococcus_agalactiae_515-AAJP01000027.1.region001    arylpolyene    Others
-> > Streptococcus_agalactiae_515-AAJP01000037.1.region001    T3PKS    PKSother
-> > .
-> > .
-> > .
-> > ~~~
-> > {: .output}
-> {: .solution}
-{: .challenge}
 
+:::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
+
+:::::::::::::::::::::::::::::::::::::::  challenge
+
+## Exercise 1: Using the text output
+
+Use one of the commands from the following list to make a reduced version of the `Network_Annotations_full.tsv`,
+it should only contain the information of the type of product, the BGC class of each BGC, and its name. And save it in a file.
+
+`grep` `cut` `ls` `cat` `mv`
+
+**Tip**: The file is inside `network_files/`.
+
+:::::::::::::::  solution
+
+## Solution
+
+Take a look at the content of the file:
+
+```bash
+$ head -n 3 network_files/2022-06-10_21-27-26_auto/Network_Annotations_Full.tsv
+```
+
+```output
+BGC    Accession ID    Description    Product Prediction    BiG-SCAPE class    Organism    Taxonomy
+Streptococcus_agalactiae_18RS21-AAJO01000016.1.region001    AAJO01000016.1    Streptococcus agalactiae
+18RS21    arylpolyene    Others    Streptococcus agalactiae 18RS21    Bacteria,Terrabacteria
+group,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Streptococcus,Streptococcus agalactiae
+Streptococcus_agalactiae_18RS21-AAJO01000043.1.region001    AAJO01000043.1    Streptococcus agalactiae
+18RS21    T3PKS    PKSother    Streptococcus agalactiae 18RS21    Bacteria,Terrabacteria
+group,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Streptococcus,Streptococcus agalactiae
+```
+
+This table is difficult to read because of the amount of information it has. The first line has the names of the
+columns; `BGC`, `Product Prediction` and `BiG-SCAPE class` are the ones we are interested in. So we will extract those.
+
+```bash
+cut -f 1,4,5 network_files/2022-06-10_21-27-26_auto/Network_Annotations_Full.tsv > type_of_BGC.tsv
+cat type_of_BGCs.tsv
+```
+
+```output
+BGC    Product Prediction    BiG-SCAPE class
+Streptococcus_agalactiae_18RS21-AAJO01000016.1.region001    arylpolyene    Others
+Streptococcus_agalactiae_18RS21-AAJO01000043.1.region001    T3PKS    PKSother
+Streptococcus_agalactiae_515-AAJP01000027.1.region001    arylpolyene    Others
+Streptococcus_agalactiae_515-AAJP01000037.1.region001    T3PKS    PKSother
+.
+.
+.
+```
+
+:::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ## Cytoscape visualization of the results
 
-You can also customize and re-renderize the similarity networks of your results with Cytoscape (https://cytoscape.org/). To do so, you will need some files included in the output directory of BiG-SCAPE. Both are located in the same folder. You can choose any folder included in the Network_files/(date)hybrids_auto/ directory, depending on your interest. The "Mix/" folder represents the complete network, including all the BGCs of the analysis. There, you will need the files "mix_c0.30.network" and "mix_clans_0.30_0.70.tsv". When you upload the ".network" file, it is required that you select as "source" the first column and as "target" the second one. Then, you can upload the ".tsv" and just select the first column as "source". Finally, you need to click on Tools -> merge -> Networks -> Union to combine both GCFs and singletons. Now you can change colors, labels, etc. according to your specific requirements.
+You can also customize and re-renderize the similarity networks of your results with Cytoscape (<https://cytoscape.org/>). To do so, you will need some files included in the output directory of BiG-SCAPE. Both are located in the same folder. You can choose any folder included in the Network\_files/(date)hybrids\_auto/ directory, depending on your interest. The "Mix/" folder represents the complete network, including all the BGCs of the analysis. There, you will need the files "mix\_c0.30.network" and "mix\_clans\_0.30\_0.70.tsv". When you upload the ".network" file, it is required that you select as "source" the first column and as "target" the second one. Then, you can upload the ".tsv" and just select the first column as "source". Finally, you need to click on Tools -> merge -> Networks -> Union to combine both GCFs and singletons. Now you can change colors, labels, etc. according to your specific requirements.
 
 ### References
+
 - Navarro-Muñoz, J.C., Selem-Mojica, N., Mullowney, M.W. et al. "A computational framework to explore large-scale biosynthetic diversity". Nature Chemical Biology (2019).
 
-- Mistry, J., Chuguransky, S., Williams, L., Qureshi, M., Salazar, G. A., Sonnhammer, E. L., ... & Bateman, A. (2021). Pfam: The protein families database in 2021. Nucleic Acids Research, 49(D1), D412-D419.
+- Mistry, J., Chuguransky, S., Williams, L., Qureshi, M., Salazar, G. A., Sonnhammer, E. L., ... \& Bateman, A. (2021). Pfam: The protein families database in 2021. Nucleic Acids Research, 49(D1), D412-D419.
 
-- Kautsar, S. A., Blin, K., Shaw, S., Navarro-Muñoz, J. C., Terlouw, B. R., van der Hooft, J. J., ... & Medema, M. H. (2020). MIBiG 2.0: a repository for biosynthetic gene clusters of known function. Nucleic acids research, 48(D1), D454-D458.
-
-{% include links.md %}
+- Kautsar, S. A., Blin, K., Shaw, S., Navarro-Muñoz, J. C., Terlouw, B. R., van der Hooft, J. J., ... \& Medema, M. H. (2020). MIBiG 2.0: a repository for biosynthetic gene clusters of known function. Nucleic acids research, 48(D1), D454-D458.
 
 
+
+:::::::::::::::::::::::::::::::::::::::: keypoints
+
+- BGC similarity is measured by BiG-SCAPE according to protein domain content, adjacency and sequence identity.
+- The `gbks` of the regions identified by antiSMASH are the input for BiG-SCAPE.
+- BiG-SCAPE delivers BGCs similarity networks with which it delimits Gene Cluster Families and creates a phylogeny of the BGCs in each GCF.
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
