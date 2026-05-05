@@ -471,22 +471,22 @@ start your analysis will be as follows:</p>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1" aria-label="code-block-4-1"></a><span class="ex">$</span> docker run <span class="at">--rm</span> <span class="at">-i</span> <span class="at">-t</span> <span class="at">-v</span> <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>:/var/www/html/EvoMining/exchange <span class="at">-p</span> 8080:80 nselem/evomining:latest /bin/bash   </span></code></pre>
 </div>
 <p>Let’s explain the pieces of this line.</p>
-<table class="table"><colgroup><col width="7%"><col width="92%"></colgroup><thead><tr class="header"><th align="center">command</th>
+<table class="table"><colgroup><col width="7%"><col width="92%"></colgroup><thead><tr><th align="center">command</th>
 <th>Explanation</th>
-</tr></thead><tbody><tr class="odd"><td align="center">docker</td>
+</tr></thead><tbody><tr><td align="center">docker</td>
 <td>tells the system that we are running a docker command</td>
-</tr><tr class="even"><td align="center">run</td>
+</tr><tr><td align="center">run</td>
 <td>the command that we are running is to run a docker container</td>
-</tr><tr class="odd"><td align="center">--rm</td>
+</tr><tr><td align="center">--rm</td>
 <td>this container will be removed after closed</td>
-</tr><tr class="even"><td align="center">-i</td>
+</tr><tr><td align="center">-i</td>
 <td>this container allows user interaction</td>
-</tr><tr class="odd"><td align="center">-t</td>
+</tr><tr><td align="center">-t</td>
 <td>this interaction will be through a terminal</td>
-</tr><tr class="even"><td align="center">-v</td>
+</tr><tr><td align="center">-v</td>
 <td>a data volume (directory) will be shared between your local machine
 and the container</td>
-</tr><tr class="odd"><td align="center">-p</td>
+</tr><tr><td align="center">-p</td>
 <td>a port will allow a web based app</td>
 </tr></tbody></table><p>However, sometimes the port 80 is busy, in that case you can use
 other ports like 8080 or 8084. If this is the case, please use the port
@@ -862,7 +862,7 @@ EvoMining output</li>
   "identifier": "https://carpentries-incubator.github.io/genome-mining/instructor/07-evomining.html",
   "dateCreated": "2021-06-20",
   "dateModified": "2026-02-20",
-  "datePublished": "2026-04-28"
+  "datePublished": "2026-05-05"
 }
 
   </script><script>
